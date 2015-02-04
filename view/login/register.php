@@ -14,15 +14,26 @@
             <input type="text" name="user_email" placeholder="email address (a real address)" required />
             <input type="password" name="user_password_new" pattern=".{6,}" placeholder="Password (6+ characters)" required autocomplete="off" />
             <input type="password" name="user_password_repeat" pattern=".{6,}" required placeholder="Repeat your password" autocomplete="off" />
+            <input type="text" name="user_account_type" pattern="[1-3]{1,1}" required placeholder="account type 1, 2 or 3" autocomplete="off" />
+            <p style="display: block; font-size: 11px; color: #999;">
+            <br>
+            1 for user
+            <br>
+            2 for resseller
+            <br>
+            3 for admin
+            <br>
+            <br>
+            </p>1
 
-            <!-- show the captcha by calling the login/showCaptcha-method in the src attribute of the img tag -->
+            <!-- show the captcha by calling the login/showCaptcha-method in the src attribute of the img tag 
             <img id="captcha" src="<?php echo Config::get('URL'); ?>login/showCaptcha" />
-            <input type="text" name="captcha" placeholder="Please enter above characters" required />
+            <input type="text" name="captcha" placeholder="Please enter above characters" required /> -->
 
-            <!-- quick & dirty captcha reloader -->
+           <!-- quick & dirty captcha reloader
             <a href="#" style="display: block; font-size: 11px; margin: 5px 0 15px 0; text-align: center"
                onclick="document.getElementById('captcha').src = '<?php echo Config::get('URL'); ?>login/showCaptcha?' + Math.random(); return false">Reload Captcha</a>
-
+-->
             <input type="submit" value="Register" />
         </form>
     </div>

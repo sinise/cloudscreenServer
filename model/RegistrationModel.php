@@ -22,10 +22,10 @@ class RegistrationModel
 		$user_email = strip_tags(Request::post('user_email'));
 		$user_password_new = Request::post('user_password_new');
 		$user_password_repeat = Request::post('user_password_repeat');
-                $user_account_tyoe = Request::post('user_account_type')
+		$user_account_type = Request::post('user_account_type');
 
 		// stop registration flow if registrationInputValidation() returns false (= anything breaks the input check rules)
-		$validation_result = RegistrationModel::registrationInputValidation(Request::$user_name, $user_password_new, $user_password_repeat, $user_email, $user_account_type);
+		$validation_result = RegistrationModel::registrationInputValidation(Request::post('captcha'), $user_name, $user_password_new, $user_password_repeat, $user_email);
 		if (!$validation_result) {
 			return false;
 		}
@@ -50,7 +50,7 @@ class RegistrationModel
 		$user_activation_hash = sha1(uniqid(mt_rand(), true));
 
 		// write user data to database
-		if (!RegistrationModel::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, @user_account_type)) {
+		if (!RegistrationModel::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_account_type)) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
 		}
 
@@ -85,10 +85,12 @@ class RegistrationModel
 	 *
 	 * @return bool
 	 */
-	public static function registrationInputValidation($user_name, $user_password_new, $user_password_repeat, $user_email, $user_account_type)
+	public static function registrationInputValidation($captcha, $user_name, $user_password_new, $user_password_repeat, $user_email)
 	{
 		// perform all necessary checks
-		if (empty($user_name)) {
+		if (!CaptchaModel::checkCaptcha($captcha)) {
+			Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
+		} else if (empty($user_name)) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_FIELD_EMPTY'));
 		} else if (empty($user_password_new) OR empty($user_password_repeat)) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_FIELD_EMPTY'));
@@ -128,20 +130,22 @@ class RegistrationModel
 	 *
 	 * @return bool
 	 */
-	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash)
+	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash, $user_account_type)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
 		// write new users data into database
-		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_acount_type, user_provider_type)
-                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_account_type, :user_provider_type)";
+		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash, user_provider_type, user_account_type, user_active)
+                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash, :user_provider_type, :user_account_type, :user_active)";
 		$query = $database->prepare($sql);
 		$query->execute(array(':user_name' => $user_name,
 		                      ':user_password_hash' => $user_password_hash,
 		                      ':user_email' => $user_email,
 		                      ':user_creation_timestamp' => $user_creation_timestamp,
-		                      ':user_account_type' => "1",
-		                      ':user_provider_type' => 'DEFAULT'));
+		                      ':user_activation_hash' => $user_activation_hash,
+		                      ':user_provider_type' => 'DEFAULT',
+		                      ':user_account_type' => $user_account_type,
+		                      ':user_active' => 1));
 		$count =  $query->rowCount();
 		if ($count == 1) {
 			return true;

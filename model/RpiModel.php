@@ -14,12 +14,27 @@ class RpiModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, mac FROM userRpiAsoc WHERE user_id = :user_id";
+        $sql = "SELECT rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer, rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime FROM userRpiAsoc INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac";
         $query = $database->prepare($sql);
-        $query->execute(array(':user_id' => $user_id));
+        $query->execute();
 
-        $macs = $query->fetchAll();
+        $macs = array();
 
+        foreach ($query->fetchAll() as $mac) {
+            // a new object for every mac. This is eventually not really optimal when it comes
+            // to performance, but it fits the view style better
+	    $macs[$mac->mac] = new stdClass();
+            $macs[$mac->mac]->mac = $mac->mac;
+            $macs[$mac->mac]->ip = $mac->ip;
+            $macs[$mac->mac]->wan = $mac->wan;
+            $macs[$mac->mac]->cpu = $mac->cpu;
+            $macs[$mac->mac]->ram = $mac->ram;
+            $macs[$mac->mac]->url = $mac->url;
+            $macs[$mac->mac]->urlViaServer = $mac->urlViaServer;
+            $macs[$mac->mac]->orientation = $mac->orientation;
+            $macs[$mac->mac]->lastMTransTime = $mac->lastMTransTime;
+            $macs[$mac->mac]->createTime = $mac->creatTime;
+        }
         return $macs;
     }
 
@@ -28,25 +43,17 @@ class RpiModel
      * @param int $user_id The user's id
      * @return mixed The selected user's profile
      */
-    public static function rpiConfig($mac)
+    public static function getRpi($mac)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar
-                FROM users WHERE user_id = :user_id LIMIT 1";
+        $sql = "SELECT id, mac, url, urlViaServer, orientation
+                FROM rpiStatus WHERE mac = :mac LIMIT 1
+                ORDER BY id";
         $query = $database->prepare($sql);
-        $query->execute(array(':user_id' => $user_id));
-        $user = $query->fetch();
+        $query->execute(array(':mac' => $mac));
+        $mac = $query->fetch();
 
-        if ($query->rowCount() == 1) {
-            if (Config::get('USE_GRAVATAR')) {
-                $user->user_avatar_link = AvatarModel::getGravatarLinkByEmail($user->user_email);
-            } else {
-                $user->user_avatar_link = AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id);
-            }
-        } else {
-            Session::add('feedback_negative', Text::get('FEEDBACK_USER_DOES_NOT_EXIST'));
-        }
-        return $user;
+       return $mac;
     }
 }

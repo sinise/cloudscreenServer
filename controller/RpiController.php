@@ -17,7 +17,7 @@ class RpiController extends Controller
     public function index()
     {
         $this->View->render('rpi/index', array(
-            'mac' => RpiModel::getRpisOfUser(Session::get('user_id')))
+            'macs' => RpiModel::getRpisOfUser(Session::get('user_id')))
 
         );
     }

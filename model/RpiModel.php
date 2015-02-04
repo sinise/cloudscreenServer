@@ -18,13 +18,9 @@ class RpiModel
         $query = $database->prepare($sql);
         $query->execute(array(':user_id' => $user_id));
 
-        $mac = array();
+        $macs = $query->fetchAll();
 
-        foreach ($query->fetchAll() as $mac) {
-            $mac[$mac->mac] = $mac->mac;
-        }
-
-        return $mac;
+        return $macs;
     }
 
     /**
@@ -32,7 +28,7 @@ class RpiModel
      * @param int $user_id The user's id
      * @return mixed The selected user's profile
      */
-    public static function getPublicProfileOfUser($user_id)
+    public static function rpiConfig($mac)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 

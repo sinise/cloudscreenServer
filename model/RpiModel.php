@@ -14,9 +14,12 @@ class RpiModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer, rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime FROM userRpiAsoc INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac";
+        $sql = "SELECT rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer,
+                rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime, userRpiAsoc.user_id FROM userRpiAsoc
+                INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac
+                WHERE user_id = :user_id";
         $query = $database->prepare($sql);
-        $query->execute();
+        $query->execute(':user_id => $user_id);
 
         $macs = array();
 

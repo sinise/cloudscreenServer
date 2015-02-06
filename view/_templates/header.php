@@ -10,9 +10,6 @@
     <!-- wrapper, to center website -->
     <div class="wrapper">
 
-        <!-- logo -->
-        <div class="logo"></div>
-
         <!-- navigation -->
         <ul class="navigation">
 

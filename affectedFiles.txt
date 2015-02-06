@@ -1,3 +1,5 @@
+  GNU nano 2.2.6                                                                                           File: affectedFiles.txt                                                                                                                                                                                   Modified  
+
 ?controller/RegistrationControler.php
 model/RegistrationModel.php
 view/_templates/header.php
@@ -6,4 +8,11 @@ controller/RpiController.php
 model/RpiModel.php
 
 affectedFiles.txt
+
+view/_templates/footer.php
+view/_templates/header.php
+view/login/index.php
+
+
+
 

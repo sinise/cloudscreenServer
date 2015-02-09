@@ -4,45 +4,33 @@
     <?php $this->renderFeedbackMessages(); ?>
 
     <!-- login box on left side -->
-    <div class="login-box" style="width: 50%; display: block;">
-        <h2>Register a new account</h2>
+    <div class="login-box">
+        <h2>Configure infoscreen <?= $this->mac->mac; ?></h2>
+  <div>
+            <table class="configRpi">
+                <thead>
+                <tr>
+                    <td>Screen orientation</td>
+                    <td>Url</td>
+                    <?php if (Session::get('user_account_type') == 3) { ?>
+                        <td>urlViaServer</td>
+                        <td>command</td>
+                    <?php } ?>
+                </tr>
+                    <form method="post" action="<?php echo Config::get('URL'); ?>rpi/configRpi_action">
+                <tr>
+                    <td><input type="radio" name="orientation" value="0" checked>Landscape<br>
+                    <input type="radio" name="orientation" value="1">Potrait</td>
 
-        <!-- register form -->
-        <form method="post" action="<?php echo Config::get('URL'); ?>login/register_action">
-            <!-- the user name input field uses a HTML5 pattern check -->
-            <input type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" placeholder="Username (letters/numbers, 2-64 chars)" required />
-            <input type="text" name="user_email" placeholder="email address (a real address)" required />
-            <input type="password" name="user_password_new" pattern=".{6,}" placeholder="Password (6+ characters)" required autocomplete="off" />
-            <input type="password" name="user_password_repeat" pattern=".{6,}" required placeholder="Repeat your password" autocomplete="off" />
-            <input type="text" name="user_account_type" pattern="[1-3]{1,1}" required placeholder="account type 1, 2 or 3" autocomplete="off" />
-            <p style="display: block; font-size: 11px; color: #999;">
-            <br>
-            1 for user
-            <br>
-            2 for resseller
-            <br>
-            3 for admin
-            <br>
-            <br>
-            </p>1
+                    <td><input type="url" name="url" value="<?= $this->mac->url ?>"/></td>
+                        <td><input type="text" placeholder="0" name="urlViaServer"/></td>
+                        <td><input type="text" placeholder="shell command to execute" name="command"/></td>
+                        <td><input type="text" name="mac" value="<?= $this->mac->mac ?>" /></td>
+            </table>
 
-            <!-- show the captcha by calling the login/showCaptcha-method in the src attribute of the img tag 
-            <img id="captcha" src="<?php echo Config::get('URL'); ?>login/showCaptcha" />
-            <input type="text" name="captcha" placeholder="Please enter above characters" required /> -->
+            <input type="submit" value="Submit" />
 
-           <!-- quick & dirty captcha reloader
-            <a href="#" style="display: block; font-size: 11px; margin: 5px 0 15px 0; text-align: center"
-               onclick="document.getElementById('captcha').src = '<?php echo Config::get('URL'); ?>login/showCaptcha?' + Math.random(); return false">Reload Captcha</a>
--->
-            <input type="submit" value="Register" />
+        </div>
         </form>
     </div>
-</div>
-<div class="container">
-    <p style="display: block; font-size: 11px; color: #999;">
-        Please note: This captcha will be generated when the img tag requests the captcha-generation
-        (= a real image) from YOURURL/login/showcaptcha. As this is a client-side triggered request, a
-        $_SESSION["captcha"] dump will not show the captcha characters. The captcha generation
-        happens AFTER the request that generates THIS page has been finished.
-    </p>
 </div>

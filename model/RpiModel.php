@@ -58,4 +58,76 @@ class RpiModel
 
        return $mac;
     }
+
+
+
+    public static function doesConfigAlreadyExist($mac)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("SELECT mac FROM commands WHERE mac = :mac LIMIT 1");
+        $query->execute(array(':mac' => $mac));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+ public static function sendConfig()
+    {
+        // TODO this could be written simpler and cleaner
+
+        // clean the input
+        $orientation = Request::post('orientation');
+        $url = Request::post('url');
+        $urlViaServer = Request::post('urlViaServer');
+        $command = Request::post('command');
+        $mac = Request::post('mac');
+
+        // check if there is already a config for the unit waiting to be send
+        if (RpiModel::doesConfigAlreadyExist($mac)) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_CONFIG_ALREADY_EXIST'));
+         //   return false;
+        }
+
+        // write user data to database
+        if (!RpiModel::writeConfigToDatabase($orientation, $url, $urlViaServer, $command, $mac)) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_CONFIG_NOT_WRITEN'));
+        }
+        else {
+            Session::add('feedback_positive', Text::get('FEEDBACK_CONFIG_WRITEN'));
+        }
+    }
+
+    /**
+     * @param $user_name
+     * @param $user_password_hash
+     * @param $user_email
+     * @param $user_creation_timestamp
+     * @param $user_activation_hash
+     *
+     * @return bool
+     */
+    public static function writeConfigToDatabase($orientation, $url, $urlViaServer, $command, $mac)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        // write new users data into database
+        $sql = "INSERT INTO commands (orientation, url, urlViaServer, command, mac)
+                    VALUES (:orientation, :url, :urlViaServer, :command, :mac)";
+        $query = $database->prepare($sql);
+        $query->execute(array(':orientation' => $orientation,
+                              ':url' => $url,
+                              ':urlViaServer' => $urlViaServer,
+                              ':command' => $command,
+                              ':mac' => $mac));
+        $count =  $query->rowCount();
+        if ($count == 1) {
+            return true;
+        }
+        return false;
+    }
 }

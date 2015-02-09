@@ -6,6 +6,9 @@
  * Could be extended to i18n etc.
  */
 return array(
+	"FEEDBACK_CONFIG_WRITEN" => "The config was set. Allow the infoscreen 2 min to reboot",
+	"FEEDBACK_CONFIG_NOT_WRITEN" => "The config could not be writen to Database",
+	"FEEDBACK_CONFIG_ALREADY_EXIST" => "There is already a configuration in the system waiting to be send to the unit. wait 1 min and try again",
 	"FEEDBACK_UNKNOWN_ERROR" => "Unknown error occurred!",
 	"FEEDBACK_PASSWORD_WRONG_3_TIMES" => "You have typed in a wrong password 3 or more times already. Please wait 30 seconds to try again.",
 	"FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET" => "Your account is not activated yet. Please click on the confirm link in the mail.",

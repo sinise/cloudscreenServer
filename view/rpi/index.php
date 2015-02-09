@@ -34,7 +34,7 @@
                         <td><?= $mac->lastMTransTime; ?></td>
                         <td><?= $mac->createTime; ?></td>
                         <td>
-                            <a href="<?= Config::get('URL') . 'rpi/showRpi/' . $mac->mac; ?>">Config</a>
+                            <a href="<?= Config::get('URL') . 'rpi/configRpi/' . $mac->mac; ?>">Config</a>
                         </td>
                     </tr>
                 <?php } ?>

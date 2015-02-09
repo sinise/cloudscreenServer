@@ -1,4 +1,5 @@
-  GNU nano 2.2.6                                                                                           File: affectedFiles.txt                                                                                                                                                                                   Modified  
+?controller/LoginController.php
+?view/login/register.php
 
 ?controller/RegistrationControler.php
 model/RegistrationModel.php
@@ -12,7 +13,5 @@ affectedFiles.txt
 view/_templates/footer.php
 view/_templates/header.php
 view/login/index.php
-
-
 
 

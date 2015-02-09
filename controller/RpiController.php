@@ -30,12 +30,8 @@ class RpiController extends Controller
      */
     public function configRpi($mac)
     {
-        if (isset($mac)) {
             $this->View->render('rpi/configRpi', array(
-                'mac' => RpiModel::getRpi($mac))
+                'mac' => RpiModel::configRpi($mac))
             );
-        } else {
-            Redirect::home();
-        }
     }
 }

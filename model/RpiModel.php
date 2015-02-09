@@ -19,14 +19,14 @@ class RpiModel
                 INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac
                 WHERE user_id = :user_id";
         $query = $database->prepare($sql);
-        $query->execute(':user_id => $user_id);
+        $query->execute(array(':user_id' => $user_id));
 
         $macs = array();
 
         foreach ($query->fetchAll() as $mac) {
             // a new object for every mac. This is eventually not really optimal when it comes
             // to performance, but it fits the view style better
-	    $macs[$mac->mac] = new stdClass();
+     	    $macs[$mac->mac] = new stdClass();
             $macs[$mac->mac]->mac = $mac->mac;
             $macs[$mac->mac]->ip = $mac->ip;
             $macs[$mac->mac]->wan = $mac->wan;
@@ -46,13 +46,12 @@ class RpiModel
      * @param int $user_id The user's id
      * @return mixed The selected user's profile
      */
-    public static function getRpi($mac)
+    public static function configRpi($mac)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "SELECT id, mac, url, urlViaServer, orientation
-                FROM rpiStatus WHERE mac = :mac LIMIT 1
-                ORDER BY id";
+                FROM rpiStatus WHERE mac = :mac LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':mac' => $mac));
         $mac = $query->fetch();

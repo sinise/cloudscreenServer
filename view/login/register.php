@@ -2,6 +2,7 @@
 
     <!-- echo out the system feedback (error and success messages) -->
     <?php $this->renderFeedbackMessages(); ?>
+ <?php if (Session::get('user_account_type') == 3) { ?>
 
     <!-- login box on left side -->
     <div class="login-box" style="width: 50%; display: block;">
@@ -37,12 +38,6 @@
             <input type="submit" value="Register" />
         </form>
     </div>
-</div>
-<div class="container">
-    <p style="display: block; font-size: 11px; color: #999;">
-        Please note: This captcha will be generated when the img tag requests the captcha-generation
-        (= a real image) from YOURURL/login/showcaptcha. As this is a client-side triggered request, a
-        $_SESSION["captcha"] dump will not show the captcha characters. The captcha generation
-        happens AFTER the request that generates THIS page has been finished.
-    </p>
+                <?php } ?>
+
 </div>

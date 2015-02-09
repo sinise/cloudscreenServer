@@ -193,11 +193,7 @@ class LoginController extends Controller
      */
     public function register()
     {
-        if (LoginModel::isUserLoggedIn()) {
-            Redirect::home();
-        } else {
             $this->View->render('login/register');
-        }
     }
 
     /**

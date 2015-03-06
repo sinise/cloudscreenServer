@@ -21,11 +21,12 @@
                 <tr>
                     <td><input type="radio" name="orientation" value="0" checked>Landscape<br>
                     <input type="radio" name="orientation" value="1">Potrait</td>
-
                     <td><input type="url" name="url" value="<?= $this->mac->url ?>"/></td>
+                    <?php if (Session::get('user_account_type') == 3) { ?>
                         <td><input type="text" placeholder="0" name="urlViaServer"/></td>
                         <td><input type="text" placeholder="shell command to execute" name="command"/></td>
-                        <td><input type="text" name="mac" value="<?= $this->mac->mac ?>" /></td>
+                    <?php } ?>
+                        <td><input type="hidden" name="mac" value="<?= $this->mac->mac ?>" /></td>
             </table>
 
             <input type="submit" value="Submit" />

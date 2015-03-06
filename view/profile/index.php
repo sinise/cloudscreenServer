@@ -21,7 +21,7 @@
                 <?php foreach ($this->users as $user) { ?>
                         <td><?= $user->user_id; ?></td>
                         <td>
-                            <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
+                            <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>"><?= $user->user_name?></a>
                         </td>
                     </tr>
                 <?php } ?>

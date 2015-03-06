@@ -88,17 +88,18 @@ class RpiModel
         $mac = Request::post('mac');
 
         // check if there is already a config for the unit waiting to be send
+        // check if there is already a config for the unit waiting to be send
         if (RpiModel::doesConfigAlreadyExist($mac)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_CONFIG_ALREADY_EXIST'));
          //   return false;
-        }
-
+        } else {
         // write user data to database
-        if (!RpiModel::writeConfigToDatabase($orientation, $url, $urlViaServer, $command, $mac)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_CONFIG_NOT_WRITEN'));
-        }
-        else {
-            Session::add('feedback_positive', Text::get('FEEDBACK_CONFIG_WRITEN'));
+            if (!RpiModel::writeConfigToDatabase($orientation, $url, $urlViaServer, $command, $mac)) {
+                Session::add('feedback_negative', Text::get('FEEDBACK_CONFIG_NOT_WRITEN'));
+            }
+            else {
+                Session::add('feedback_positive', Text::get('FEEDBACK_CONFIG_WRITEN'));
+            }
         }
     }
 

@@ -10,29 +10,36 @@
                 <thead>
                 <tr>
                     <td>Mac</td>
-                    <td>ip</td>
-                    <td>wan</td>
-                    <td>cpu</td>
-                    <td>ram</td>
-                    <td>url</td>
-                    <td>Url via Cloudscreen</td>
+                    <td>lan ip</td>
+                    <td>wan ip</td>
                     <td>orientation</td>
-                    <td>Transfer time</td>
-                    <td>Last message</td>
+                    <td>url</td>
+
+                    <?php if (Session::get('user_account_type') == 3) { ?>
+                        <td>cpu</td>
+                        <td>ram</td>
+                        <td>Url via Cloudscreen</td>
+                        <td>Transfer time</td>
+                        <td>Last message</td>
+                    <?php } ?>
                     <td>Config</td>
+
                 </tr>
                 </thead>
                 <?php foreach ($this->macs as $mac) { ?>
                         <td><?= $mac->mac; ?></td>
                         <td><?= $mac->ip; ?></td>
                         <td><?= $mac->wan; ?></td>
-                        <td><?= $mac->cpu; ?></td>
-                        <td><?= $mac->ram; ?></td>
-                        <td><?= $mac->url; ?></td>
-                        <td><?= $mac->urlViaServer; ?></td>
                         <td><?= $mac->orientation; ?></td>
-                        <td><?= $mac->lastMTransTime; ?></td>
-                        <td><?= $mac->createTime; ?></td>
+                        <td><?= $mac->url; ?></td>
+
+                        <?php if (Session::get('user_account_type') == 3) { ?>
+                            <td><?= $mac->cpu; ?></td>
+                            <td><?= $mac->ram; ?></td>
+                            <td><?= $mac->urlViaServer; ?></td>
+                            <td><?= $mac->lastMTransTime; ?></td>
+                            <td><?= $mac->createTime; ?></td>
+                        <?php } ?>
                         <td>
                             <a href="<?= Config::get('URL') . 'rpi/configRpi/' . $mac->mac; ?>">Config</a>
                         </td>

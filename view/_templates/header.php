@@ -60,16 +60,7 @@
                 <a href="<?php echo Config::get('URL'); ?>login/showprofile">My Account</a>
                 <ul class="navigation-submenu">
                     <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/changeaccounttype">Change account type</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/uploadavatar">Upload an avatar</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/editusername">Edit my username</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/edituseremail">Edit my email</a>
+                        <a href="<?php echo Config::get('URL'); ?>login/edituseremail">Edit email</a>
                     </li>
                     <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
                         <a href="<?php echo Config::get('URL'); ?>login/logout">Logout</a>

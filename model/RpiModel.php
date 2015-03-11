@@ -116,9 +116,9 @@ class RpiModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        // write new users data into database
+        // write new config to database to be qued for sending
         $sql = "INSERT INTO commands (orientation, url, urlViaServer, command, mac)
-                    VALUES (:orientation, :url, :urlViaServer, :command, :mac)";
+                VALUES (:orientation, :url, :urlViaServer, :command, :mac)";
         $query = $database->prepare($sql);
         $query->execute(array(':orientation' => $orientation,
                               ':url' => $url,
@@ -131,4 +131,37 @@ class RpiModel
         }
         return false;
     }
+
+
+
+    public static function recvSendRpi()
+    {
+        
+    }
+
+
+    public static function writeStatusRpi($ip, $mac, $wan, $cpu, $ram, $url, $urlViaServer, $orientation, $lastMTransTime)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        // write status to database 
+        $sql = "INSERT INTO rpiStatus (ip, mac, wan, cpu, ram, url, urlViaServer, orientation, lastMTransTimeip, mac, cpu)
+                VALUES (:ip, :mac, :wan, :cpu, :ram, :url, :urlViaServer, :orientation, :lastMTransTime)";
+        $query = $database->prepare($sql);
+        $query->execute(array(':ip' => $ip,
+                              ':mac' => $mac,
+                              ':wan' => $wan,
+                              ':cpu' => $cpu,
+                              ':ram' => $ram,
+                              ':url' => $url,
+                              ':urlViaServer' => $urlViaServer,
+                              ':orientation' => $orientation,
+                              ':lastMTransTime' => $lastMtransTime));
+        $count =  $query->rowCount();
+        if ($count == 1) {
+            return true;
+        }
+        return false;
+    }
+
 }

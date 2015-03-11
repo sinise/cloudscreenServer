@@ -48,4 +48,21 @@ class RpiController extends Controller
         }
 
     }
+
+    /**
+     * Receive status Rpi action
+     * POST-request after received 
+     */
+    public function recvSendRpi_action()
+    {
+        $status_successful = RpiModel::recvSendRpi();
+        if ($status_successful) {
+            Redirect::to('rpi/configGet');
+        } else {
+            Redirect::to('rpi/configGet');
+        }
+
+    }
+
+
 }

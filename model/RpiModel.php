@@ -78,8 +78,6 @@ class RpiModel
 
  public static function sendConfig()
     {
-        // TODO this could be written simpler and cleaner
-
         // clean the input
         $orientation = Request::post('orientation');
         $url = Request::post('url');
@@ -134,18 +132,25 @@ class RpiModel
 
 
 
-    public static function recvSendRpi()
-    {
-        
-    }
-
-
-    public static function writeStatusRpi($ip, $mac, $wan, $cpu, $ram, $url, $urlViaServer, $orientation, $lastMTransTime)
+    public static function recvStatusRpi()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
+        // clean the input
+        $ip = Request::post('ip');
+        $mac = Request::post('mac');
+        $wan = Request::post('wan');
+        $cpu = Request::post('cpu');
+        $ram = Request::post('ram');
+        $url = Request::post('url');
+        $urlViaServer = Request::post('urlViaServer');
+        $orientation = Request::post('orientation');
+        $lastMTransTime = Request::post('lastMTransTime');
+
+        // write status to database
+
         // write status to database 
-        $sql = "INSERT INTO rpiStatus (ip, mac, wan, cpu, ram, url, urlViaServer, orientation, lastMTransTimeip, mac, cpu)
+        $sql = "INSERT INTO rpiStatus (ip, mac, wan, cpu, ram, url, urlViaServer, orientation, lastMTransTime)
                 VALUES (:ip, :mac, :wan, :cpu, :ram, :url, :urlViaServer, :orientation, :lastMTransTime)";
         $query = $database->prepare($sql);
         $query->execute(array(':ip' => $ip,
@@ -156,12 +161,30 @@ class RpiModel
                               ':url' => $url,
                               ':urlViaServer' => $urlViaServer,
                               ':orientation' => $orientation,
-                              ':lastMTransTime' => $lastMtransTime));
+                              ':lastMTransTime' => $lastMTransTime));
         $count =  $query->rowCount();
         if ($count == 1) {
             return true;
         }
         return false;
     }
+    /**
+     * Sending new configuration or commands to the RPi as a response to a received status message
+     * @param int $mac The mac of the rpi
+     * @return the config messages as an array
+     */
+    public static function sendCommandRpi($mac)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT *
+                FROM commands WHERE mac = :mac LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(':mac' => $mac));
+        $mac = $query->fetch();
+
+       return $mac;
+    }
+
 
 }

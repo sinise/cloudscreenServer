@@ -35,7 +35,7 @@ class RpiController extends Controller
             );
     }
     /**
-     * Configure Rpi action
+     * Configure Rpi action Add the configuration message to the queue (table commands in db)
      * POST-request after form submit
      */
     public function configRpi_action()
@@ -53,16 +53,16 @@ class RpiController extends Controller
      * Receive status Rpi action
      * POST-request after received 
      */
-    public function recvSendRpi_action()
+    public function recvStatusRpi_action($mac)
     {
-        $status_successful = RpiModel::recvSendRpi();
+        $status_successful = RpiModel::recvStatusRpi();
         if ($status_successful) {
-            Redirect::to('rpi/configGet');
+            $this->View->renderJSON(array(
+                'mac' => RpiModel::sendCommandRpi($mac))
+            );
         } else {
-            Redirect::to('rpi/configGet');
+            Redirect::to('rpi/index');
         }
 
     }
-
-
 }

@@ -13,11 +13,20 @@ class RpiModel
     public static function getRpisOfUser($user_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
+        if (Session::get('user_acount_type') == 3) {
+            $sql = "SELECT rpiStatus.id, rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer,
+                    rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime FROM rpiStatus
+                    ORDER BY id DESC LIMIT 1";
 
-        $sql = "SELECT rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer,
-                rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime, userRpiAsoc.user_id FROM userRpiAsoc
-                INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac
-                WHERE user_id = :user_id";
+        }
+        else {
+
+            $sql = "SELECT rpiStatus.id, rpiStatus.mac, rpiStatus.ip, rpiStatus.wan, rpiStatus.cpu, rpiStatus.ram, rpiStatus.url, rpiStatus.urlViaServer,
+                    rpiStatus.orientation, rpiStatus.lastMTransTime, rpiStatus.creatTime, userRpiAsoc.user_id FROM userRpiAsoc
+                    INNER JOIN rpiStatus ON rpiStatus.mac = userRpiAsoc.mac
+                    WHERE user_id = :user_id
+                    ORDER BY id DESC LIMIT 1";
+        }
         $query = $database->prepare($sql);
         $query->execute(array(':user_id' => $user_id));
 
@@ -51,7 +60,9 @@ class RpiModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "SELECT id, mac, url, urlViaServer, orientation
-                FROM rpiStatus WHERE mac = :mac LIMIT 1";
+                FROM rpiStatus WHERE mac = :mac
+                ORDER BY id DESC
+                LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':mac' => $mac));
         $mac = $query->fetch();
@@ -143,15 +154,15 @@ class RpiModel
         $cpu = Request::post('cpu');
         $ram = Request::post('ram');
         $url = Request::post('url');
-        $urlViaServer = Request::post('urlViaServer');
+//        $urlViaServer = Request::post('urlViaServer');
         $orientation = Request::post('orientation');
         $lastMTransTime = Request::post('lastMTransTime');
 
         // write status to database
 
         // write status to database 
-        $sql = "INSERT INTO rpiStatus (ip, mac, wan, cpu, ram, url, urlViaServer, orientation, lastMTransTime)
-                VALUES (:ip, :mac, :wan, :cpu, :ram, :url, :urlViaServer, :orientation, :lastMTransTime)";
+        $sql = "INSERT INTO rpiStatus (ip, mac, wan, cpu, ram, url, orientation, lastMTransTime)
+                VALUES (:ip, :mac, :wan, :cpu, :ram, :url, :orientation, :lastMTransTime)";
         $query = $database->prepare($sql);
         $query->execute(array(':ip' => $ip,
                               ':mac' => $mac,
@@ -159,7 +170,6 @@ class RpiModel
                               ':cpu' => $cpu,
                               ':ram' => $ram,
                               ':url' => $url,
-                              ':urlViaServer' => $urlViaServer,
                               ':orientation' => $orientation,
                               ':lastMTransTime' => $lastMTransTime));
         $count =  $query->rowCount();
@@ -181,9 +191,13 @@ class RpiModel
                 FROM commands WHERE mac = :mac LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':mac' => $mac));
-        $mac = $query->fetch();
+        $macs = $query->fetch();
 
-       return $mac;
+        $query = $database->prepare("DELETE FROM commands WHERE mac = :mac");
+        $query->execute(array(':mac' => $mac));
+        $sql = "DELETE FROM commands WHERE mac = :mac";
+
+       return $macs;
     }
 
 
